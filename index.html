@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta name="theme-color" content="#0f172a">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AWN Coding Library v4.2</title>
+<link rel="icon" type="image/png" href="./awn-logo.png">
+<style>
+:root{--bg:#030914;--panel:#071426;--panel2:#0a1930;--line:#17365a;--text:#eaf4ff;--muted:#86a1c2;--blue:#168cff;--green:#22c55e;--red:#ef4444;--yellow:#fbbf24}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 70% -10%,#12345a 0,#030914 40%);color:var(--text);font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow:auto;padding:16px 12px;border-right:1px solid var(--line);background:#030c19}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800;font-size:17px;padding:5px 7px 20px}
+.brand small{display:block;font-size:9px;color:var(--muted);font-weight:500}
+
+/* === LOGO SIDEBAR === */
+.logo-img{
+  width:38px;height:38px;border-radius:11px;object-fit:cover;flex-shrink:0;
+  box-shadow:0 0 0 1px #1d5b93,0 4px 12px rgba(22,140,255,.35);
+  background:#fff;
+}
+
+.nav-title{margin:16px 8px 6px;color:#607e9f;font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.nav button{width:100%;border:0;background:none;color:#9db6d2;text-align:left;padding:9px;border-radius:9px;cursor:pointer}
+.nav button:hover,.nav button.active{background:#0d2c50;color:#fff}
+.badge{float:right;background:#102a48;border:1px solid #21476f;border-radius:99px;padding:1px 6px;font-size:10px}
+.main{min-width:0}
+.top{height:66px;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;background:#030914dd;backdrop-filter:blur(12px)}
+.search{flex:1;max-width:650px;position:relative}
+.search input{width:100%;padding:11px 15px 11px 37px;background:#07172c;color:#fff;border:1px solid #1a3e67;border-radius:10px;outline:none}
+.search i{position:absolute;left:13px;top:9px;color:#6f8cab;font-style:normal;font-size:19px}
+.actions{margin-left:auto;display:flex;gap:7px}
+.btn{border:1px solid #214b77;background:#0a1c34;color:#dcecff;border-radius:9px;padding:9px 12px;cursor:pointer;font-size:13px}
+.btn:hover{border-color:#318ee4}
+.primary{background:linear-gradient(135deg,#087cff,#1760d4);border-color:#2398ff}
+.danger{border-color:#74313a;color:#ff9b9b}
+.content{max-width:1500px;margin:auto;padding:18px}
+.hero{border:1px solid #174a7a;border-radius:15px;padding:22px;background:linear-gradient(110deg,#0a223df5,#05101ee8);display:flex;justify-content:space-between;gap:20px;align-items:center}
+.hero h1{margin:0 0 6px;font-size:28px}
+.hero p{color:#a9bed8;margin:0 0 14px}
+.chips,.tags{display:flex;gap:6px;flex-wrap:wrap}
+.chip,.tag{font-size:10px;background:#092646;border:1px solid #1d5b93;border-radius:8px;padding:5px 8px;color:#bfe0ff}
+
+/* === LOGO HERO === */
+.art{
+  width:250px;flex-shrink:0;border-radius:14px;
+  background:linear-gradient(135deg,#0b3154,#07101e);
+  display:grid;place-items:center;padding:14px;overflow:hidden;
+  box-shadow:inset 0 0 40px rgba(22,140,255,.15);
+}
+.hero-logo{
+  width:100%;max-width:220px;height:auto;border-radius:10px;
+  filter:drop-shadow(0 6px 24px rgba(22,140,255,.45));
+  transition:transform .4s ease;
+}
+.hero-logo:hover{transform:scale(1.05) rotate(-2deg)}
+
+.section{margin-top:18px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.head h2{font-size:16px;margin:0}
+.muted{color:var(--muted)}
+.cats{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.cat{min-height:90px;border:1px solid #143d65;background:#07172c;color:#fff;text-align:left;border-radius:12px;padding:13px;cursor:pointer}
+.cat:hover{border-color:#2b78b8}
+.cat b{display:block;margin-top:8px}
+.cat span{color:#7f9ab8;font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{border:1px solid #153b62;background:#061529;border-radius:12px;padding:13px;display:flex;flex-direction:column}
+.cardtop{display:flex;justify-content:space-between;gap:8px}
+.card h3{margin:0;font-size:14px;word-break:break-word}
+.lang{font-size:10px;color:#64b5ff;margin-top:4px}
+.star{border:0;background:none;color:#5e7896;font-size:17px;cursor:pointer;padding:0;line-height:1}
+.star.on{color:#ffd34d}
+.desc{color:#8ca6c2;font-size:11px;min-height:34px;margin:8px 0}
+.card-actions{display:flex;gap:6px;margin-top:auto;padding-top:10px;flex-wrap:wrap}
+.card-actions .btn{font-size:11px;padding:6px 8px}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:12px;margin-top:18px}
+.panel{border:1px solid #153b62;background:#051326;border-radius:12px;overflow:hidden}
+.panelhead{padding:11px 13px;border-bottom:1px solid #143451;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.panelhead b{font-size:13px;word-break:break-word}
+.editorbody{display:grid;grid-template-columns:42px 1fr}
+.lines{background:#03101e;color:#416888;text-align:right;padding:15px 8px;font:12px/1.65 monospace;white-space:pre;overflow:hidden;user-select:none}
+.code{width:100%;height:430px;resize:vertical;border:0;outline:0;background:#03101e;color:#d9efff;padding:15px;font:12px/1.65 monospace;tab-size:2}
+.preview{width:100%;height:285px;border:0;background:#fff;display:block}
+.console{height:145px;overflow:auto;background:#020a13;color:#98e8b2;padding:10px;font:11px/1.5 monospace;white-space:pre-wrap}
+.err{color:#ff8c8c}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#07172b;border:1px solid #163c62;border-radius:11px;padding:14px}
+.stat strong{font-size:22px}
+.stat span{display:block;color:#7692b0;font-size:10px}
+.view{display:none}
+.view.active{display:block}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
+.modal.open{display:flex}
+.modalbox{width:min(720px,100%);max-height:90vh;overflow:auto;background:#071527;border:1px solid #23547e;border-radius:14px}
+.form{padding:15px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11px;color:#89a7c7}
+.field input,.field textarea,.field select{background:#041022;color:#fff;border:1px solid #1b4168;border-radius:8px;padding:9px;outline:0;font-family:inherit}
+.field textarea{min-height:180px;resize:vertical;font:12px/1.6 monospace}
+.modalfoot{padding:13px;border-top:1px solid #173b5f;display:flex;justify-content:flex-end;gap:8px}
+.toast{position:fixed;right:18px;bottom:18px;background:#09223c;border:1px solid #2c72ad;color:#dff1ff;padding:11px 14px;border-radius:10px;display:none;z-index:50;max-width:80vw}
+.toast.show{display:block}
+.empty{padding:35px;text-align:center;color:#708aa6;border:1px dashed #21496f;border-radius:12px}
+@media(max-width:1100px){.cats{grid-template-columns:repeat(4,1fr)}.workspace{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.app{grid-template-columns:1fr}.side{display:none}.top{padding:0 9px}.content{padding:10px}.art{display:none}.cats{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.form{grid-template-columns:1fr}.field.full{grid-column:auto}.actions .btn:not(.primary){display:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <img src="./awn-logo.png" alt="AWN Logo" class="logo-img">
+      <div>AWN Coding Library<small>Your Personal Developer Toolbox</small></div>
+    </div>
+    <div class="nav">
+      <button class="active" data-view="home">⌂ Beranda</button>
+      <button data-view="library">▦ Library <span class="badge" id="count">0</span></button>
+      <button data-view="favorites">♡ Favorit <span class="badge" id="favcount">0</span></button>
+      <button data-view="recent">◷ Terakhir Dilihat</button>
+      <button data-view="stats">▥ Statistik</button>
+    </div>
+    <div class="nav-title">Kategori</div>
+    <div class="nav" id="sidecats"></div>
+    <div class="nav-title">Tools</div>
+    <div class="nav">
+      <button data-cat="Firebase">🔥 Firebase</button>
+      <button data-cat="API">🔗 API</button>
+      <button data-cat="OCR">⌁ OCR</button>
+      <button data-cat="Converter">⇄ Converter</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div class="search">
+        <i>⌕</i>
+        <input id="search" placeholder="Cari kode, fitur, tag, atau deskripsi... (Ctrl + K)">
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnExport">⇩ Export</button>
+        <button class="btn" id="btnImport">⇧ Import</button>
+        <input id="importFile" type="file" accept=".json" hidden>
+        <button class="btn primary" id="btnAdd">＋ Tambah Script</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- HOME -->
+      <section class="view active" id="home">
+        <div class="hero">
+          <div>
+            <h1>AWN Coding Library <span class="chip">v4.2.0</span></h1>
+            <p>Kumpulan kode, template, dan contoh siap pakai untuk membangun website, aplikasi, dan sistem.</p>
+            <div class="chips">
+              <span class="chip">✓ CRUD</span>
+              <span class="chip">✓ Search & Tags</span>
+              <span class="chip">✓ Favorite</span>
+              <span class="chip">✓ Live Tester</span>
+              <span class="chip">✓ Local First</span>
+            </div>
+          </div>
+          <div class="art">
+            <img src="./awn-logo.png" alt="AWN Studio" class="hero-logo">
+          </div>
+        </div>
+        <div class="section">
+          <div class="head"><h2>Kategori Populer</h2></div>
+          <div class="cats" id="cats"></div>
+        </div>
+        <div class="section">
+          <div class="head">
+            <h2>Script Terbaru</h2>
+            <button class="btn" data-view="library">Lihat Semua →</button>
+          </div>
+          <div class="cards" id="recentCards"></div>
+        </div>
+      </section>
+
+      <!-- LIBRARY -->
+      <section class="view" id="library">
+        <div class="head">
+          <h2 id="libTitle">Library</h2>
+          <div style="display:flex;gap:7px">
+            <button class="btn" id="btnResetFilter">Reset Filter</button>
+            <button class="btn primary" id="btnAdd2">＋ Tambah Script</button>
+          </div>
+        </div>
+        <div class="cards" id="libraryCards"></div>
+      </section>
+
+      <!-- FAVORITES -->
+      <section class="view" id="favorites">
+        <div class="head"><h2>Favorit</h2></div>
+        <div class="cards" id="favCards"></div>
+      </section>
+
+      <!-- RECENT -->
+      <section class="view" id="recent">
+        <div class="head"><h2>Terakhir Dilihat</h2></div>
+        <div class="cards" id="recentViewCards"></div>
+      </section>
+
+      <!-- STATS -->
+      <section class="view" id="stats">
+        <div class="head"><h2>Statistik Library</h2></div>
+        <div class="stats" id="statsBox"></div>
+        <div class="section"><div class="cards" id="langBox"></div></div>
+        <div class="section"><button class="btn danger" id="btnReset">Reset ke Data Demo</button></div>
+      </section>
+
+      <!-- WORKSPACE -->
+      <div class="section">
+        <div class="head">
+          <h2 id="selectedTitle">Pilih script untuk membuka editor</h2>
+          <span class="muted">Editor + Live Tester</span>
+        </div>
+        <div class="workspace">
+          <div class="panel">
+            <div class="panelhead">
+              <b id="selectedMeta">Belum ada script dipilih</b>
+              <div style="display:flex;gap:6px">
+                <button class="btn" id="btnSave">💾 Simpan</button>
+                <button class="btn" id="btnCopy">Copy</button>
+                <button class="btn primary" id="btnRun">▶️ Run Test</button>
+              </div>
+            </div>
+            <div class="editorbody">
+              <div class="lines" id="lines">1</div>
+              <textarea class="code" id="code" spellcheck="false" placeholder="Pilih script atau buat script baru..."></textarea>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panelhead"><b>Monitor / Tester Code</b><span class="chip">Live Preview</span></div>
+            <iframe class="preview" id="preview" sandbox="allow-scripts allow-modals"></iframe>
+            <div class="panelhead"><b>Console</b><button class="btn" id="btnClear">Clear</button></div>
+            <div class="console" id="console">Ready.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <div class="panelhead">
+      <b id="modalTitle">Tambah Script</b>
+      <button class="btn" id="btnCloseModal">✕</button>
+    </div>
+    <form class="form" id="form">
+      <input id="fid" type="hidden">
+      <div class="field">
+        <label>Nama Script</label>
+        <input id="fname" required placeholder="Firebase Login">
+      </div>
+      <div class="field">
+        <label>Bahasa</label>
+        <select id="flang">
+          <option>JavaScript</option>
+          <option>HTML</option>
+          <option>CSS</option>
+          <option>TypeScript</option>
+          <option>Python</option>
+          <option>SQL</option>
+          <option>React</option>
+          <option>Flutter</option>
+          <option>JSON</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Kategori</label>
+        <input id="fcat" required placeholder="Authentication">
+      </div>
+      <div class="field">
+        <label>Tags</label>
+        <input id="ftags" placeholder="firebase, auth, login">
+      </div>
+      <div class="field full">
+        <label>Deskripsi</label>
+        <input id="fdesc">
+      </div>
+      <div class="field full">
+        <label>Kode</label>
+        <textarea id="fcode" required></textarea>
+      </div>
+    </form>
+    <div class="modalfoot">
+      <button class="btn" id="btnCancel">Batal</button>
+      <button class="btn primary" type="submit" form="form">Simpan Script</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   KONSTANTA & UTIL
+   ============================================================ */
+const KEY = 'awn-coding-library-v4';
+const VERSION = '4.2.0';
+
+const seed = [
+  {id:'1',name:'Firebase Login',lang:'JavaScript',category:'Authentication',tags:['firebase','auth','login'],desc:'Contoh login email/password.',code:"function login(email,password){ if(!email||!password) throw new Error('Email dan password wajib diisi'); return 'Login demo: '+email; }\nconsole.log(login('demo@awn.local','123456'));",favorite:true,views:12,created:Date.now()-300000000},
+  {id:'2',name:'Format Rupiah',lang:'JavaScript',category:'Utility',tags:['js','format','currency'],desc:'Format angka menjadi Rupiah.',code:"const rupiah=v=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(v);\nconsole.log(rupiah(2500000));",favorite:true,views:8,created:Date.now()-200000000},
+  {id:'3',name:'Responsive Dashboard',lang:'HTML',category:'Dashboard',tags:['html','css','responsive'],desc:'Dashboard HTML sederhana.',code:"<!doctype html><html><body style='font-family:Arial;background:#071426;color:white;padding:30px'><h1>AWN Dashboard</h1><p>Live preview aktif.</p><button onclick=\"alert('Hello AWN!')\">Test Button</button></body></html>",favorite:false,views:5,created:Date.now()-100000000},
+  {id:'4',name:'Fetch API',lang:'JavaScript',category:'API',tags:['fetch','api','async'],desc:'Template request API.',code:"fetch('https://jsonplaceholder.typicode.com/todos/1').then(r=>r.json()).then(console.log).catch(console.error);",favorite:false,views:2,created:Date.now()-5000000},
+  {id:'5',name:'SQL Select',lang:'SQL',category:'Database',tags:['sql','database','select'],desc:'Query SELECT dasar.',code:"SELECT id, nama, jumlah FROM transaksi WHERE jumlah > 100000 ORDER BY jumlah DESC;",favorite:false,views:1,created:Date.now()-3000000}
+];
+
+function uuid(){
+  try {
+    if (crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  } catch(e){}
+  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10);
+}
+
+function esc(s=''){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function jsStr(s){ return JSON.stringify(String(s)); }
+
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 1800);
+}
+
+/* ============================================================
+   STATE & STORAGE
+   ============================================================ */
+let scripts = [];
+let selected = null;
+let query = '';
+let category = null;
+
+function normalizeScript(s){
+  return {
+    id: String(s?.id || uuid()),
+    name: String(s?.name || 'Untitled Script'),
+    lang: String(s?.lang || 'JavaScript'),
+    category: String(s?.category || 'Lainnya'),
+    tags: Array.isArray(s?.tags) ? s.tags.map(String).filter(Boolean) : [],
+    desc: String(s?.desc || ''),
+    code: String(s?.code || ''),
+    favorite: Boolean(s?.favorite),
+    views: Number(s?.views) || 0,
+    created: Number(s?.created) || Date.now(),
+    lastViewed: Number(s?.lastViewed) || 0
+  };
+}
+
+function uniqueScripts(arr){
+  const used = new Set();
+  return arr.map(s => {
+    const x = normalizeScript(s);
+    let base = x.id, n = 1;
+    while (used.has(x.id)) x.id = base + '-' + (n++);
+    used.add(x.id);
+    return x;
+  });
+}
+
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return uniqueScripts(seed);
+    const x = JSON.parse(raw);
+    return Array.isArray(x) ? uniqueScripts(x) : uniqueScripts(seed);
+  } catch(e){
+    console.warn('Load gagal, pakai seed:', e);
+    return uniqueScripts(seed);
+  }
+}
+
+function save(){
+  try {
+    localStorage.setItem(KEY, JSON.stringify(scripts));
+  } catch(e){
+    toast('Gagal menyimpan: storage penuh');
+  }
+}
+
+/* ============================================================
+   VIEW & FILTER
+   ============================================================ */
+function setView(v){
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  const target = document.getElementById(v);
+  if (!target) return;
+  target.classList.add('active');
+  document.querySelectorAll('[data-view]').forEach(x =>
+    x.classList.toggle('active', x.dataset.view === v)
+  );
+  render();
+}
+
+function clearFilters(){
+  query = '';
+  category = null;
+  document.getElementById('search').value = '';
+  document.getElementById('libTitle').textContent = 'Library';
+  setView('library');
+}
+
+function filterCategory(c){
+  category = c;
+  document.getElementById('libTitle').textContent = 'Library · ' + c;
+  setView('library');
+}
+
+function getFiltered(){
+  let a = [...scripts];
+  if (category) a = a.filter(s => s.category === category || s.lang === category);
+  if (query) {
+    const q = query.toLowerCase().trim();
+    a = a.filter(s =>
+      [s.name, s.lang, s.category, s.desc, s.code, ...(s.tags||[])]
+        .join(' ').toLowerCase().includes(q)
+    );
+  }
+  return a.sort((a,b) => (b.created||0) - (a.created||0));
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function card(s){
+  return `<article class="card" data-id="${esc(s.id)}">
+    <div class="cardtop">
+      <div>
+        <h3>${esc(s.name)}</h3>
+        <div class="lang">${esc(s.lang)} · ${esc(s.category)}</div>
+      </div>
+      <button class="star ${s.favorite?'on':''}" data-action="fav" title="Favorit">★</button>
+    </div>
+    <div class="tags">${(s.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div>
+    <div class="desc">${esc(s.desc||'')}</div>
+    <div class="muted" style="font-size:10px">◷ ${s.views||0} views</div>
+    <div class="card-actions">
+      <button class="btn" data-action="open">Buka</button>
+      <button class="btn" data-action="edit">Edit</button>
+      <button class="btn danger" data-action="delete">Hapus</button>
+    </div>
+  </article>`;
+}
+
+function render(){
+  document.getElementById('count').textContent = scripts.length;
+  document.getElementById('favcount').textContent = scripts.filter(x => x.favorite).length;
+
+  const langs = {};
+  scripts.forEach(s => langs[s.lang] = (langs[s.lang]||0) + 1);
+
+  document.getElementById('cats').innerHTML = Object.entries(langs)
+    .slice(0,7)
+    .map(([k,v]) =>
+      `<button class="cat" data-cat="${esc(k)}"><b>${esc(k)}</b><span>${v} script</span></button>`
+    ).join('') || '<div class="empty" style="grid-column:1/-1">Belum ada kategori.</div>';
+
+  document.getElementById('sidecats').innerHTML = Object.entries(langs)
+    .slice(0,10)
+    .map(([k,v]) =>
+      `<button data-cat="${esc(k)}">▣ ${esc(k)} <span class="badge">${v}</span></button>`
+    ).join('');
+
+  const recent = [...scripts].sort((a,b) => (b.created||0) - (a.created||0));
+  document.getElementById('recentCards').innerHTML =
+    recent.slice(0,4).map(card).join('') || '<div class="empty">Belum ada script.</div>';
+
+  document.getElementById('libraryCards').innerHTML =
+    getFiltered().map(card).join('') || '<div class="empty">Tidak ada script.</div>';
+
+  document.getElementById('favCards').innerHTML =
+    scripts.filter(s => s.favorite).map(card).join('') ||
+    '<div class="empty">Belum ada favorit.</div>';
+
+  const viewed = [...scripts]
+    .filter(s => s.lastViewed)
+    .sort((a,b) => (b.lastViewed||0) - (a.lastViewed||0));
+  document.getElementById('recentViewCards').innerHTML =
+    viewed.slice(0,12).map(card).join('') ||
+    '<div class="empty">Belum ada script yang dibuka.</div>';
+
+  const totalViews = scripts.reduce((n,s) => n + (s.views||0), 0);
+  document.getElementById('statsBox').innerHTML = [
+    ['Total Script', scripts.length],
+    ['Favorit', scripts.filter(s => s.favorite).length],
+    ['Total Views', totalViews],
+    ['Bahasa', Object.keys(langs).length]
+  ].map(([label,val]) =>
+    `<div class="stat"><strong>${val}</strong><span>${label}</span></div>`
+  ).join('');
+
+  document.getElementById('langBox').innerHTML = Object.entries(langs)
+    .sort((a,b) => b[1] - a[1])
+    .map(([k,v]) =>
+      `<div class="stat"><strong>${v}</strong><span>${esc(k)}</span></div>`
+    ).join('');
+
+  if (selected) {
+    document.getElementById('selectedTitle').textContent = selected.name;
+    document.getElementById('selectedMeta').textContent =
+      selected.lang + ' · ' + selected.category +
+      (selected.tags.length ? ' · ' + selected.tags.join(', ') : '');
+    const codeEl = document.getElementById('code');
+    if (codeEl.value !== selected.code) codeEl.value = selected.code;
+    updateLines();
+  }
+}
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+function openScript(id){
+  const s = scripts.find(x => x.id === id);
+  if (!s) return;
+  selected = s;
+  s.views = (s.views||0) + 1;
+  s.lastViewed = Date.now();
+  save();
+  render();
+  document.querySelector('.workspace').scrollIntoView({behavior:'smooth', block:'start'});
+  clearConsole();
+  log('Opened: ' + s.name);
+}
+
+function toggleFav(id){
+  const s = scripts.find(x => x.id === id);
+  if (!s) return;
+  s.favorite = !s.favorite;
+  save();
+  render();
+  toast(s.favorite ? 'Ditambahkan ke favorit' : 'Dihapus dari favorit');
+}
+
+function deleteScript(id){
+  const s = scripts.find(x => x.id === id);
+  if (!s) return;
+  if (!confirm('Hapus script "' + s.name + '"?')) return;
+  scripts = scripts.filter(x => x.id !== id);
+  if (selected && selected.id === id) selected = null;
+  save();
+  render();
+  toast('Script dihapus');
+}
+
+/* ============================================================
+   MODAL / FORM
+   ============================================================ */
+function openAdd(){
+  document.getElementById('modalTitle').textContent = 'Tambah Script';
+  fillForm(null);
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('fname').focus(), 50);
+}
+
+function editScript(id){
+  const s = scripts.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('modalTitle').textContent = 'Edit Script';
+  fillForm(s);
+  document.getElementById('modal').classList.add('open');
+}
+
+function fillForm(s){
+  document.getElementById('fid').value = s?.id || '';
+  document.getElementById('fname').value = s?.name || '';
+  document.getElementById('fcat').value = s?.category || '';
+  document.getElementById('ftags').value = (s?.tags || []).join(', ');
+  document.getElementById('fdesc').value = s?.desc || '';
+  document.getElementById('fcode').value = s?.code || '';
+
+  const select = document.getElementById('flang');
+  const lang = s?.lang || 'JavaScript';
+  [...select.options].forEach(o => { if (o.dataset.custom === '1') o.remove(); });
+  if (![...select.options].some(o => o.value === lang)) {
+    const o = document.createElement('option');
+    o.value = lang;
+    o.textContent = lang;
+    o.dataset.custom = '1';
+    select.appendChild(o);
+  }
+  select.value = lang;
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const id = document.getElementById('fid').value;
+  const data = {
+    name: document.getElementById('fname').value.trim(),
+    lang: document.getElementById('flang').value,
+    category: document.getElementById('fcat').value.trim(),
+    tags: document.getElementById('ftags').value.split(',').map(x => x.trim()).filter(Boolean),
+    desc: document.getElementById('fdesc').value.trim(),
+    code: document.getElementById('fcode').value
+  };
+  if (!data.name || !data.category || !data.code.trim()) {
+    toast('Nama, kategori, dan kode wajib diisi');
+    return;
+  }
+  if (id) {
+    const target = scripts.find(s => s.id === id);
+    if (!target) { toast('Script tidak ditemukan'); return; }
+    Object.assign(target, data);
+    selected = target;
+    toast('Script diperbarui');
+  } else {
+    const s = {
+      ...data,
+      id: uuid(),
+      favorite: false,
+      views: 0,
+      created: Date.now(),
+      lastViewed: Date.now()
+    };
+    scripts.unshift(s);
+    selected = s;
+    toast('Script ditambahkan');
+  }
+  save();
+  closeModal();
+  render();
+  document.querySelector('.workspace').scrollIntoView({behavior:'smooth'});
+});
+
+/* ============================================================
+   EDITOR
+   ============================================================ */
+function updateLines(){
+  const n = document.getElementById('code').value.split('\n').length;
+  document.getElementById('lines').textContent =
+    Array.from({length: n}, (_,i) => i+1).join('\n');
+}
+
+function saveEditor(){
+  if (!selected) { toast('Pilih script terlebih dahulu'); return; }
+  selected.code = document.getElementById('code').value;
+  save();
+  render();
+  toast('Perubahan disimpan');
+}
+
+const codeEl = document.getElementById('code');
+codeEl.addEventListener('input', () => {
+  if (selected) {
+    selected.code = codeEl.value;
+    save();
+  }
+  updateLines();
+});
+codeEl.addEventListener('scroll', () => {
+  document.getElementById('lines').scrollTop = codeEl.scrollTop;
+});
+codeEl.addEventListener('keydown', e => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const a = e.target;
+    const p = a.selectionStart;
+    a.value = a.value.slice(0, p) + '  ' + a.value.slice(a.selectionEnd);
+    a.selectionStart = a.selectionEnd = p + 2;
+    updateLines();
+    if (selected) { selected.code = a.value; save(); }
+  }
+});
+
+/* ============================================================
+   CONSOLE & RUN
+   ============================================================ */
+function log(s, isErr = false){
+  const c = document.getElementById('console');
+  const span = document.createElement('span');
+  span.className = isErr ? 'err' : '';
+  span.textContent = s;
+  if (c.textContent && c.textContent !== 'Ready.') c.appendChild(document.createTextNode('\n'));
+  else c.textContent = '';
+  c.appendChild(span);
+  c.scrollTop = c.scrollHeight;
+}
+
+function clearConsole(){
+  document.getElementById('console').textContent = 'Ready.';
+}
+
+function runCode(){
+  if (!selected) { toast('Pilih script terlebih dahulu'); return; }
+  selected.code = codeEl.value;
+  save();
+  clearConsole();
+  log('Running ' + selected.name + ' ...');
+
+  const lang = selected.lang;
+  const code = selected.code;
+  let html = '';
+
+  if (lang === 'HTML') {
+    html = code;
+  } else if (lang === 'CSS') {
+    html = `<style>${code}</style><div style="font:16px Arial;padding:30px">AWN CSS Preview</div>`;
+  } else if (['JavaScript','TypeScript','React'].includes(lang)) {
+    const safe = code.replace(/<\/script/gi, '<\\/script');
+    html = `<!doctype html><html><body style="font-family:Arial;padding:20px">
+      <h3>AWN JS Sandbox</h3>
+      <div id="app"></div>
+      <scr`+`ipt>
+        const send = (type, a) => parent.postMessage({
+          awn: true, type,
+          args: a.map(x => { try { return typeof x === 'object' ? JSON.stringify(x) : String(x); } catch(e){ return String(x); } })
+        }, '*');
+        console.log = (...a) => send('log', a);
+        console.error = (...a) => send('error', a);
+        window.onerror = (m) => send('error', [m]);
+        window.addEventListener('unhandledrejection', e => send('error', ['Unhandled: ' + (e.reason?.message || e.reason)]));
+        try { ${safe} } catch(e) { send('error', [e.message]); }
+      </scr`+`ipt>
+    </body></html>`;
+  } else {
+    html = '<pre style="padding:20px;white-space:pre-wrap;font:13px/1.6 monospace">' + esc(code) + '</pre>';
+  }
+
+  const iframe = document.getElementById('preview');
+  iframe.srcdoc = '';
+  setTimeout(() => { iframe.srcdoc = html; }, 30);
+
+  setTimeout(() => log('Test selesai.'), 700);
+}
+
+window.addEventListener('message', e => {
+  if (e.data && e.data.awn) {
+    log((e.data.args||[]).join(' '), e.data.type === 'error');
+  }
+});
+
+/* ============================================================
+   COPY / EXPORT / IMPORT / RESET
+   ============================================================ */
+async function copyCode(){
+  if (!selected) { toast('Pilih script dulu'); return; }
+  try {
+    await navigator.clipboard.writeText(codeEl.value);
+    toast('Kode berhasil dicopy');
+  } catch(e) {
+    codeEl.select();
+    document.execCommand('copy');
+    toast('Kode dicopy (fallback)');
+  }
+}
+
+function exportLibrary(){
+  const data = {
+    app: 'AWN Coding Library',
+    version: VERSION,
+    exportedAt: new Date().toISOString(),
+    scriptCount: scripts.length,
+    scripts
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'awn-coding-library-backup.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 500);
+  toast('Library diexport');
+}
+
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      const arr = Array.isArray(parsed) ? parsed : parsed.scripts;
+      if (!Array.isArray(arr)) throw new Error('Format JSON tidak valid');
+      if (!confirm('Import akan menimpa library saat ini. Lanjutkan?')) {
+        e.target.value = '';
+        return;
+      }
+      scripts = uniqueScripts(arr);
+      selected = null;
+      save();
+      render();
+      toast('Import berhasil: ' + scripts.length + ' script');
+    } catch(err) {
+      alert('Import gagal: ' + err.message);
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+function resetLibrary(){
+  if (!confirm('Reset library ke data demo? Semua script yang kamu tambahkan akan dihapus.')) return;
+  scripts = uniqueScripts(seed);
+  selected = null;
+  category = null;
+  query = '';
+  document.getElementById('search').value = '';
+  document.getElementById('libTitle').textContent = 'Library';
+  save();
+  render();
+  toast('Library dikembalikan ke data demo');
+}
+
+/* ============================================================
+   EVENT DELEGATION
+   ============================================================ */
+document.addEventListener('click', e => {
+  const viewBtn = e.target.closest('[data-view]');
+  if (viewBtn) { setView(viewBtn.dataset.view); return; }
+
+  const catBtn = e.target.closest('[data-cat]');
+  if (catBtn) { filterCategory(catBtn.dataset.cat); return; }
+
+  const actionBtn = e.target.closest('[data-action]');
+  if (actionBtn) {
+    const cardEl = actionBtn.closest('.card');
+    const id = cardEl?.dataset.id;
+    if (!id) return;
+    const action = actionBtn.dataset.action;
+    if (action === 'open') openScript(id);
+    else if (action === 'edit') editScript(id);
+    else if (action === 'delete') deleteScript(id);
+    else if (action === 'fav') toggleFav(id);
+  }
+});
+
+/* ============================================================
+   SEARCH & KEYBOARD
+   ============================================================ */
+document.getElementById('search').addEventListener('input', e => {
+  query = e.target.value;
+  document.getElementById('libTitle').textContent = 'Library';
+  const libView = document.getElementById('library');
+  if (!libView.classList.contains('active')) setView('library');
+  else render();
+});
+
+document.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && k === 'k') {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  } else if ((e.ctrlKey || e.metaKey) && k === 's') {
+    e.preventDefault();
+    if (document.getElementById('modal').classList.contains('open')) {
+      document.getElementById('form').requestSubmit();
+    } else {
+      saveEditor();
+    }
+  } else if (e.key === 'Escape') {
+    closeModal();
+  }
+});
+
+/* ============================================================
+   BINDINGS TOMBOL
+   ============================================================ */
+document.getElementById('btnAdd').addEventListener('click', openAdd);
+document.getElementById('btnAdd2').addEventListener('click', openAdd);
+document.getElementById('btnExport').addEventListener('click', exportLibrary);
+document.getElementById('btnImport').addEventListener('click', () => document.getElementById('importFile').click());
+document.getElementById('btnResetFilter').addEventListener('click', clearFilters);
+document.getElementById('btnReset').addEventListener('click', resetLibrary);
+document.getElementById('btnSave').addEventListener('click', saveEditor);
+document.getElementById('btnCopy').addEventListener('click', copyCode);
+document.getElementById('btnRun').addEventListener('click', runCode);
+document.getElementById('btnClear').addEventListener('click', clearConsole);
+document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+document.getElementById('btnCancel').addEventListener('click', closeModal);
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+scripts = load();
+render();
+console.log('AWN Coding Library v' + VERSION + ' siap. Scripts: ' + scripts.length);
+</script>
+</body>
+</html>
